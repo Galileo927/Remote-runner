@@ -4,11 +4,12 @@
 
 ## 功能特性
 
-- 使用纯 JavaScript SSH 库 (`ssh2`) 连接到远程服务器
-- 读取工作区根目录下的 `.remote-runner.json` 配置文件
-- 实时流式传输远程服务器的输出到 VS Code 输出面板
-- 支持密码和私钥两种认证方式
-- 支持顺序执行多个命令
+- 🧙 **智能初始化向导**: 通过交互式问答自动生成配置文件，无需手动编写 JSON
+- 🔍 **智能项目探测**: 自动识别 CMake、Makefile、Node.js、Python 等项目类型并生成对应构建命令
+- 🔐 **多种认证方式**: 支持密码和私钥两种认证方式，自动探测 SSH 私钥
+- 📡 **实时输出流式传输**: 实时流式传输远程服务器的输出到 VS Code 输出面板
+- 🎯 **PTY 支持**: 启用伪终端，支持彩色输出和交互式命令
+- 🔄 **顺序执行**: 支持顺序执行多个命令
 
 ## 安装和使用
 
@@ -30,9 +31,34 @@ npm run compile
 npm run watch
 ```
 
-### 3. 配置文件
+### 3. 配置文件（推荐使用智能向导）
 
-在工作区根目录创建 `.remote-runner.json` 文件：
+#### 方式一：使用智能初始化向导（推荐）
+
+这是最简单的方式，插件会通过交互式问答引导你完成配置：
+
+1. 打开 VS Code 命令面板：`Ctrl+Shift+P` (Mac: `Cmd+Shift+P`)
+2. 输入并选择 `Remote Runner: Initialize Config (Wizard)`
+3. 按照提示填写信息：
+   - **主机地址**: 输入远程服务器的 IP 或域名（如 `192.168.1.100`）
+   - **用户名**: 输入 SSH 登录用户名（默认为当前系统用户名）
+   - **端口**: 输入 SSH 端口（默认 22）
+   - **认证方式**:
+     - 选择 **SSH 私钥**（推荐）：向导会自动探测 `~/.ssh/id_rsa`，你也可以手动输入路径
+     - 选择 **密码**：直接输入登录密码
+   - **项目类型确认**: 向导会自动探测你的项目类型（CMake/Makefile/Node.js/Python），并推荐相应的构建命令
+4. 配置完成后，会自动打开 `.remote-runner.json` 文件供你查看和修改
+
+**支持的智能项目探测**：
+- **CMake 项目** (检测到 `CMakeLists.txt`): 自动生成 `mkdir -p build && cd build && cmake .. && make -j4`
+- **Makefile 项目** (检测到 `Makefile`): 自动生成 `make`
+- **Node.js 项目** (检测到 `package.json`): 自动生成 `npm install && npm start`
+- **Python 项目** (检测到 `*.py` 或 `requirements.txt`): 自动生成 `python3 main.py`
+- **默认**: 生成测试命令 `ls -la && echo 'Remote Runner is working!'`
+
+#### 方式二：手动创建配置文件
+
+如果你想手动创建，在工作区根目录创建 `.remote-runner.json` 文件：
 
 ```json
 {
@@ -60,14 +86,17 @@ npm run watch
 | `port` | number | 否 | SSH 端口，默认 22 |
 | `commands` | string[] | 是 | 要执行的命令列表 |
 
-### 5. 运行插件
+### 4. 运行插件
 
 在 VS Code 中：
 
-1. 按 `F5` 启动调试模式（会打开一个新的 Extension Development Host 窗口）
-2. 在新窗口中按 `Ctrl+Shift+P` (或 `Cmd+Shift+P` on Mac)
-3. 输入 `Remote Runner: Run Remote Commands`
-4. 查看输出面板中的实时输出
+1. 按 `Ctrl+Shift+P` (Mac: `Cmd+Shift+P`) 打开命令面板
+2. 输入 `Remote Runner: Run Remote Commands`
+3. 查看输出面板中的实时输出
+
+**其他可用命令**：
+- `Remote Runner: Disconnect` - 断开当前连接
+- `Remote Runner: Initialize Config (Wizard)` - 重新初始化配置文件
 
 ## 认证方式
 
@@ -111,11 +140,50 @@ remote-runner/
 ├── src/
 │   ├── extension.ts          # 插件入口文件
 │   ├── sshManager.ts         # SSH 连接和命令执行管理
-│   └── configReader.ts       # 配置文件读取和解析
-├── .remote-runner.json       # 示例配置文件
+│   ├── configReader.ts       # 配置文件读取和解析
+│   └── initWizard.ts         # 智能初始化向导
+├── .remote-runner.json       # 配置文件（由向导生成或手动创建）
 ├── package.json              # VS Code 插件配置
 ├── tsconfig.json             # TypeScript 编译配置
 └── README.md                 # 项目文档
+```
+
+## 常用命令
+
+### 命令面板中的可用命令
+
+1. **Remote Runner: Initialize Config (Wizard)** 🧙
+   - 启动智能初始化向导
+   - 通过交互式问答自动生成配置文件
+   - 自动探测项目类型并推荐构建命令
+
+2. **Remote Runner: Run Remote Commands** ▶️
+   - 执行配置文件中的远程命令
+   - 实时显示输出到 Output Channel
+
+3. **Remote Runner: Disconnect** 🔌
+   - 断开当前的 SSH 连接
+
+### 使用示例
+
+**示例 1: C++ 项目（CMake）**
+```
+1. 打开 C++ 项目
+2. Ctrl+Shift+P -> "Remote Runner: Initialize Config"
+3. 输入服务器信息
+4. 向导检测到 CMakeLists.txt，推荐 CMake 构建命令
+5. 确认后自动生成配置
+6. Ctrl+Shift+P -> "Remote Runner: Run Remote Commands"
+7. 查看构建输出
+```
+
+**示例 2: Node.js 项目部署**
+```
+1. 打开 Node.js 项目
+2. 使用向导初始化配置
+3. 向导检测到 package.json，推荐 npm 命令
+4. 自定义命令（如改为 "npm run build"）
+5. 保存配置并运行
 ```
 
 ## 技术栈
@@ -124,13 +192,24 @@ remote-runner/
 - **SSH 库**: [ssh2](https://github.com/mscdex/ssh2) - 纯 JavaScript 实现
 - **开发语言**: TypeScript
 - **目标平台**: VS Code 1.74.0+
+- **核心特性**: PTY (伪终端) 支持、智能项目探测、交互式向导
 
 ## 开发和调试
 
+### 开发者快速开始
+
 1. 克隆项目后，运行 `npm install` 安装依赖
 2. 按 `F5` 在 VS Code 中启动调试
-3. 在新打开的窗口中测试插件功能
+3. 在新打开的 Extension Development Host 窗口中测试插件功能
 4. 修改代码后，TypeScript 会自动重新编译（监听模式下）
+
+### 测试智能向导
+
+在调试窗口中：
+1. 按 `Ctrl+Shift+P`
+2. 选择 "Remote Runner: Initialize Config (Wizard)"
+3. 跟随向导完成配置
+4. 检查生成的 `.remote-runner.json` 文件是否符合预期
 
 ## 打包插件
 
