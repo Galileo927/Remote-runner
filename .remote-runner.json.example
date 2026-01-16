@@ -1,0 +1,28 @@
+{
+    "_comment": "这是 Remote Runner 的配置文件示例",
+    "_comment": "请根据您的实际情况修改配置，并将此文件重命名为 .remote-runner.json",
+
+    "host": "192.168.1.100",
+    "username": "root",
+
+    "_comment_auth": "认证方式：password、privateKey 或 privateKeyPath 三选一",
+    "password": "mypassword",
+
+    "_comment_privateKey": "或者使用私钥认证（推荐）",
+    "privateKeyPath": "/home/user/.ssh/id_rsa",
+
+    "_comment_privateKeyContent": "或者直接提供私钥内容",
+    "privateKey": "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
+
+    "port": 22,
+
+    "_comment_commands": "要执行的命令列表，会按顺序依次执行",
+    "commands": [
+        "echo '=== Starting build ==='",
+        "cd /path/to/project",
+        "git pull",
+        "make clean",
+        "make -j4",
+        "echo '=== Build completed ==='"
+    ]
+}

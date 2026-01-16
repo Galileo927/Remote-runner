@@ -1,0 +1,11 @@
+node_modules
+out
+.vscode-test
+*.vsix
+.DS_Store
+
+# Security: Never commit sensitive configuration files
+.remote-runner.json
+
+# Keep example files
+!.remote-runner.json.example
