@@ -1,38 +1,38 @@
 # Remote Runner
 
-A lightweight VS Code extension that allows C++ developers to execute build commands on remote Linux servers via SSH, without using Microsoft's heavy "Remote-SSH" extension.
+一个轻量级的 VS Code 插件，允许 C++ 开发者通过 SSH 在远程 Linux 服务器上执行构建命令，无需使用微软官方的 "Remote-SSH" 插件。
 
-## Features
+## 功能特性
 
-- Connect to remote servers using pure JavaScript SSH library (`ssh2`)
-- Read `.remote-runner.json` configuration file from workspace root
-- Stream remote server output to VS Code OutputChannel in real-time
-- Support both password and private key authentication
-- Execute multiple commands sequentially
+- 使用纯 JavaScript SSH 库 (`ssh2`) 连接到远程服务器
+- 读取工作区根目录下的 `.remote-runner.json` 配置文件
+- 实时流式传输远程服务器的输出到 VS Code 输出面板
+- 支持密码和私钥两种认证方式
+- 支持顺序执行多个命令
 
-## Installation and Usage
+## 安装和使用
 
-### 1. Install Dependencies
+### 1. 安装依赖
 
 ```bash
 npm install
 ```
 
-### 2. Compile TypeScript Code
+### 2. 编译 TypeScript 代码
 
 ```bash
 npm run compile
 ```
 
-Or use watch mode (recommended for development):
+或使用监听模式（开发时推荐）：
 
 ```bash
 npm run watch
 ```
 
-### 3. Configuration File
+### 3. 配置文件
 
-Create `.remote-runner.json` file in the workspace root:
+在工作区根目录创建 `.remote-runner.json` 文件：
 
 ```json
 {
@@ -48,30 +48,30 @@ Create `.remote-runner.json` file in the workspace root:
 }
 ```
 
-### 4. Configuration Options
+### 4. 配置项说明
 
-| Field | Type | Required | Description |
-|------|------|----------|-------------|
-| `host` | string | Yes | Remote server IP address or hostname |
-| `username` | string | Yes | SSH login username |
-| `password` | string | No | SSH login password (one of password/privateKey/privateKeyPath is required) |
-| `privateKey` | string | No | Private key content (one of password/privateKey/privateKeyPath is required) |
-| `privateKeyPath` | string | No | Private key file path (one of password/privateKey/privateKeyPath is required) |
-| `port` | number | No | SSH port, default 22 |
-| `commands` | string[] | Yes | List of commands to execute |
+| 字段 | 类型 | 必需 | 说明 |
+|------|------|------|------|
+| `host` | string | 是 | 远程服务器 IP 地址或域名 |
+| `username` | string | 是 | SSH 登录用户名 |
+| `password` | string | 否 | SSH 登录密码（与 privateKey/privateKeyPath 二选一） |
+| `privateKey` | string | 否 | 私钥内容（与 password/privateKeyPath 二选一） |
+| `privateKeyPath` | string | 否 | 私钥文件路径（与 password/privateKey 二选一） |
+| `port` | number | 否 | SSH 端口，默认 22 |
+| `commands` | string[] | 是 | 要执行的命令列表 |
 
-### 5. Run the Extension
+### 5. 运行插件
 
-In VS Code:
+在 VS Code 中：
 
-1. Press `F5` to start debug mode (opens a new Extension Development Host window)
-2. In the new window, press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
-3. Type `Remote Runner: Run Remote Commands`
-4. View the real-time output in the output panel
+1. 按 `F5` 启动调试模式（会打开一个新的 Extension Development Host 窗口）
+2. 在新窗口中按 `Ctrl+Shift+P` (或 `Cmd+Shift+P` on Mac)
+3. 输入 `Remote Runner: Run Remote Commands`
+4. 查看输出面板中的实时输出
 
-## Authentication Methods
+## 认证方式
 
-### Password Authentication
+### 使用密码认证
 
 ```json
 {
@@ -82,7 +82,7 @@ In VS Code:
 }
 ```
 
-### Private Key File Authentication
+### 使用私钥文件认证
 
 ```json
 {
@@ -93,7 +93,7 @@ In VS Code:
 }
 ```
 
-### Private Key Content Authentication
+### 使用私钥内容认证
 
 ```json
 {
@@ -104,67 +104,174 @@ In VS Code:
 }
 ```
 
-## Project Structure
+## 项目结构
 
 ```
 remote-runner/
 ├── src/
-│   ├── extension.ts          # Extension entry point
-│   ├── sshManager.ts         # SSH connection and command execution manager
-│   └── configReader.ts       # Configuration file reader and parser
-├── .remote-runner.json       # Example configuration file
-├── package.json              # VS Code extension configuration
-├── tsconfig.json             # TypeScript compilation configuration
-└── README.md                 # Project documentation
+│   ├── extension.ts          # 插件入口文件
+│   ├── sshManager.ts         # SSH 连接和命令执行管理
+│   └── configReader.ts       # 配置文件读取和解析
+├── .remote-runner.json       # 示例配置文件
+├── package.json              # VS Code 插件配置
+├── tsconfig.json             # TypeScript 编译配置
+└── README.md                 # 项目文档
 ```
 
-## Tech Stack
+## 技术栈
 
-- **Runtime**: Node.js (VS Code Extension Host)
-- **SSH Library**: [ssh2](https://github.com/mscdex/ssh2) - Pure JavaScript implementation
-- **Development Language**: TypeScript
-- **Target Platform**: VS Code 1.74.0+
+- **运行时**: Node.js (VS Code Extension Host)
+- **SSH 库**: [ssh2](https://github.com/mscdex/ssh2) - 纯 JavaScript 实现
+- **开发语言**: TypeScript
+- **目标平台**: VS Code 1.74.0+
 
-## Development and Debugging
+## 开发和调试
 
-1. After cloning the project, run `npm install` to install dependencies
-2. Press `F5` in VS Code to start debugging
-3. Test the extension in the newly opened window
-4. TypeScript will automatically recompile after code changes (in watch mode)
+1. 克隆项目后，运行 `npm install` 安装依赖
+2. 按 `F5` 在 VS Code 中启动调试
+3. 在新打开的窗口中测试插件功能
+4. 修改代码后，TypeScript 会自动重新编译（监听模式下）
 
-## Package Extension
+## 打包插件
 
 ```bash
-# Install vsce
+# 安装 vsce
 npm install -g vsce
 
-# Package as .vsix file
+# 打包成 .vsix 文件
 vsce package
 ```
 
-The generated `.vsix` file can be installed directly into VS Code.
+生成的 `.vsix` 文件可以直接安装到 VS Code 中。
 
-## FAQ
+## 常见问题
 
-### Q: Connection timeout?
-A: Check firewall settings and ensure SSH port (default 22) is open.
+### Q: 连接超时怎么办？
+A: 检查防火墙设置，确保 SSH 端口（默认 22）开放。
 
-### Q: Authentication failed?
-A: Verify username, password, or private key configuration is correct. Private key file path should be an absolute path.
+### Q: 认证失败？
+A: 确认用户名、密码或私钥配置正确。私钥文件路径应该是绝对路径。
 
-### Q: Command execution failed?
-A: Check the output panel for error messages and verify the command exists on the remote server.
+### Q: 命令执行失败？
+A: 查看输出面板中的错误信息，检查命令是否在远程服务器上存在。
 
-## Security Recommendations
+## 安全建议
 
-- Do not hardcode passwords in configuration files; use private key authentication instead
-- Add `.remote-runner.json` to `.gitignore` to avoid leaking sensitive information
-- Configure SSH users using the principle of least privilege
+- 不要在配置文件中硬编码密码，建议使用私钥认证
+- 将 `.remote-runner.json` 添加到 `.gitignore` 避免敏感信息泄露
+- 使用最小权限原则配置 SSH 用户
+
+## 使用场景
+
+### 场景 1: 远程构建 C++ 项目
+
+```json
+{
+    "host": "build-server.company.com",
+    "username": "build-user",
+    "privateKeyPath": "/home/user/.ssh/build_server_key",
+    "commands": [
+        "cd /opt/my-project",
+        "git pull origin main",
+        "cmake -B build",
+        "cmake --build build -j8"
+    ]
+}
+```
+
+### 场景 2: 部署应用到服务器
+
+```json
+{
+    "host": "prod-server.example.com",
+    "username": "deploy",
+    "privateKeyPath": "/home/user/.ssh/deploy_key",
+    "commands": [
+        "cd /var/www/app",
+        "git pull",
+        "npm install --production",
+        "pm2 restart app"
+    ]
+}
+```
+
+### 场景 3: 执行系统维护命令
+
+```json
+{
+    "host": "server.example.com",
+    "username": "admin",
+    "password": "secure-password",
+    "commands": [
+        "df -h",
+        "free -m",
+        "uptime"
+    ]
+}
+```
+
+## 开发模式
+
+如果想持续监听代码变化并自动重新编译：
+
+```bash
+npm run watch
+```
+
+然后可以修改 `src/` 目录下的任何 TypeScript 文件，代码会自动重新编译。
+
+## 故障排除
+
+### 问题：连接超时
+
+**可能原因**：
+- 服务器 IP 或端口错误
+- 防火墙阻止了连接
+- 服务器未运行 SSH 服务
+
+**解决方案**：
+- 检查配置文件中的 `host` 和 `port`
+- 尝试用系统 SSH 客户端连接：`ssh user@host`
+
+### 问题：认证失败
+
+**可能原因**：
+- 用户名或密码错误
+- 私钥文件路径不正确
+- 私钥格式不正确
+
+**解决方案**：
+- 手动测试 SSH 连接
+- 检查私钥文件权限：`chmod 600 ~/.ssh/id_rsa`
+- 确认使用的是正确的私钥格式（OpenSSH 格式）
+
+### 问题：命令执行失败
+
+**可能原因**：
+- 命令在远程服务器上不存在
+- 权限不足
+- 工作目录不正确
+
+**解决方案**：
+- 先手动在远程服务器上测试命令
+- 检查用户权限
+- 在命令中先 `cd` 到正确的工作目录
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+开发流程：
+1. Fork 本仓库
+2. 创建特性分支：`git checkout -b feature/amazing-feature`
+3. 提交更改：`git commit -m 'Add amazing feature'`
+4. 推送分支：`git push origin feature/amazing-feature`
+5. 创建 Pull Request
 
 ## License
 
 MIT
 
-## Author
+## 作者
 
 Galileo <1134271093@qq.com>
